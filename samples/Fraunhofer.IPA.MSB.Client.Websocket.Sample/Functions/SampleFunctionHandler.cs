@@ -19,6 +19,7 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket.Sample.Functions
     using Fraunhofer.IPA.MSB.Client.API.Attributes;
     using Fraunhofer.IPA.MSB.Client.API.Model;
     using Serilog;
+    using System;
 
     [MsbFunctionHandler(Id = "SimpleFunctionHandlerId")]
     public class SampleFunctionHandler : AbstractFunctionHandler
@@ -28,12 +29,23 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket.Sample.Functions
         }
 
         [MsbFunction(
-            Id = "EmptySampleFunction",
-            Name = "Empty Sample Function",
-            Description = "Description of EmptySampleFunction")]
-        public void EmptySampleFunction(FunctionCallInfo info)
+            Id = "HelloWorld",
+            Name = "Hello World",
+            Description = "Adds World to hello")]
+        public void addWorld([MsbFunctionParameter(Name = "input")]string input, FunctionCallInfo info)
         {
-            Log.Information("EmptySampleFunction has been called");
+            string result = input + " World!";
+            Console.WriteLine(result);
+        }
+
+        [MsbFunction(
+            Id = "SumofInts",
+            Name = "Sum of Ints",
+            Description = "Adds two ints")]
+        public void sum([MsbFunctionParameter(Name = "Ints")]IntegerValues Ints, FunctionCallInfo info)
+        {
+            int result1 = Ints.val1 + Ints.val2;
+            Console.WriteLine(result1);
         }
 
         [MsbFunction(
@@ -60,4 +72,8 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket.Sample.Functions
             return new EventDataBuilder(functionCallInfo.ResponseEvents["SimpleEventId"]).SetValue(new Events.SimpleEvent()).Build();
         }
     }
+    public class IntegerValues {
+            public int val1;
+            public int val2;
+        }
 }

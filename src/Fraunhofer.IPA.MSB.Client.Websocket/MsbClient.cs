@@ -609,8 +609,10 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket
                     foreach (var functionCallParameter in functionCall.FunctionParameters)
                     {
                         var currentParameterCallIndex = AbstractFunctionHandler.GetParameterIndexFromName(functionOfService.FunctionPointer.Method, functionCallParameter.Key);
+                        if (currentParameterCallIndex < 0 || currentParameterCallIndex >= functionOfService.FunctionPointer.Method.GetParameters().Length) continue;
+                        
                         var currentParameterCallType = functionOfService.FunctionPointer.Method.GetParameters()[currentParameterCallIndex].ParameterType;
-
+                        
                         object deserializedParameter = null;
                         if (OpenApiMapper.IsPrimitiveDataType(currentParameterCallType))
                         {
@@ -623,6 +625,7 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket
                         }
 
                         parameterArrayForInvoke[currentParameterCallIndex] = deserializedParameter;
+                        
                     }
 
                     var calledFunction = serviceOfFunctionCall.GetFunctionById(functionCall.FunctionId);

@@ -28,7 +28,7 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket.Sample
 
     public class MsbClientSample
     {
-        public const string MsbWebsocketInterfaceUrl = "ws://localhost:8085";
+        public const string MsbWebsocketInterfaceUrl = "ws://ws.msb.ipa.cell.vfk.fraunhofer.de";
 
         private MsbClient myMsbClient;
         private SmartObject mySmartobject;
@@ -62,14 +62,14 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket.Sample
 
         public static void AllInOneSample()
         {
-            const string MsbWebsocketInterfaceUrl = "ws://localhost:8085";
+            const string MsbWebsocketInterfaceUrl = "ws://ws.msb.ipa.cell.vfk.fraunhofer.de";
 
-            const string MyMsbSmartObjectUuid = "1a17b5e3-3a6a-4e62-97b0-82cfdd1cc818";
+            const string MyMsbSmartObjectUuid = "5607fd6f-50ae-44e7-bd6a-9416fbb25d43";
             const string MyMsbSmartObjectName = "C# Sample SmartObject";
             const string MyMsbSmartObjectDescription = "Description of my C# sample SmartObject";
             const string MyMsbSmartObjectToken = "30e47482-c140-49a9-a79f-6f2396d8e0ab";
 
-            const string MyMsbApplicationUuid = "46441dc8-c3ab-4c93-9632-d1f356afb8ca";
+            const string MyMsbApplicationUuid = "f69067bc-6e8c-4479-a358-8a56f7b7a54d";
             const string MyMsbApplicationName = "C# Sample Application";
             const string MyMsbApplicationDescription = "Description of my C# sample Application";
             const string MyMsbApplicationToken = "5b6b273b-18ff-420b-bbff-5f40288c18f9";
@@ -89,12 +89,16 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket.Sample
             Event simpleEvent = new Event("SimpleEventId", "Name of simple event", "Event with simple data format", typeof(string));
             Event flatEvent = new Event("FlatEventId", "Name of flat event", "Event with flat data format", typeof(Events.SimpleEvent));
             Event complexEvent = new Event("ComplexEventId", "Name of complex event", "Event with nested data format", typeof(Events.ComplexEvent));
+            Event sendInts = new Event("SendIntsId", "Send Ints", "sends two integer values", typeof(IntegerValues));
             myMsbSmartObject.AddEvent(simpleEvent);
             myMsbSmartObject.AddEvent(flatEvent);
             myMsbSmartObject.AddEvent(complexEvent);
+            myMsbSmartObject.AddEvent(sendInts);
             myMsbApplication.AddEvent(simpleEvent);
             myMsbApplication.AddEvent(flatEvent);
             myMsbApplication.AddEvent(complexEvent);
+            myMsbApplication.AddEvent(sendInts);
+
 
             // Add functions
             SampleFunctionHandler simpleFunctions = new SampleFunctionHandler();
@@ -109,19 +113,14 @@ namespace Fraunhofer.IPA.MSB.Client.Websocket.Sample
             // Publish events
             while (true)
             {
-                EventData eventData_SimpleEvent = new EventDataBuilder(simpleEvent).SetValue("TestString").Build();
-                myMsbClient.PublishAsync(myMsbSmartObject, eventData_SimpleEvent).Wait();
 
-                EventData eventData_FlatEvent = new EventDataBuilder(flatEvent).SetValue(new Events.SimpleEvent()).Build();
-                myMsbClient.PublishAsync(myMsbSmartObject, eventData_FlatEvent).Wait();
-
-                EventData eventData_ComplexEvent = new EventDataBuilder(complexEvent).SetValue(new Events.ComplexEvent()).Build();
-                myMsbClient.PublishAsync(myMsbSmartObject, eventData_ComplexEvent).Wait();
-
-                Thread.Sleep(3000);
             }
         }
 
+        public class IntegerValues {
+            public int val1;
+            public int val2;
+        }
         private void GenerateServiceFromApplicationPropertiesFile()
         {
             ApplicationProperties myApplicationProperties = ApplicationProperties.Read();
